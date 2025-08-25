@@ -5,19 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>My Portfolio</title>
   <link rel="stylesheet" href="style.css">
-  <style>
-    /* Simple gallery styling */
-    #gallery {
-      display: flex;
-      flex-wrap: wrap;
-    }
-    #gallery img {
-      width: 200px;
-      margin: 5px;
-      border-radius: 5px;
-      object-fit: cover;
-    }
-  </style>
+
 </head>
 <body>
   <header>
@@ -56,7 +44,7 @@
 
   <!-- Script to fetch images from Google Sheet -->
   <script>
-    const sheetUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRv8H4afCZsXQ1w81-HFtRkalZFa1H_hqBt4DpQJb0bEJd5LZFEmnEX8sHBcO3Yr8VitBSqqk12V-Op/pubhtml"; // Replace with your published CSV link
+    const sheetUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRv8H4afCZsXQ1w81-HFtRkalZFa1H_hqBt4DpQJb0bEJd5LZFEmnEX8sHBcO3Yr8VitBSqqk12V-Op/pub?output=csv"; // Replace with your published CSV link
 
     async function loadImages() {
       try {
