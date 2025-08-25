@@ -5,6 +5,19 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>My Portfolio</title>
   <link rel="stylesheet" href="style.css">
+  <style>
+    /* Simple gallery styling */
+    #gallery {
+      display: flex;
+      flex-wrap: wrap;
+    }
+    #gallery img {
+      width: 200px;
+      margin: 5px;
+      border-radius: 5px;
+      object-fit: cover;
+    }
+  </style>
 </head>
 <body>
   <header>
@@ -18,11 +31,18 @@
   </section>
 
   <section id="portfolio">
-    <h2>Photos</h2>
-    <ul>
-      
-    </ul>
-  </section>
+  <h2>Photos</h2>
+  
+  <!-- Gallery of images -->
+  <div id="gallery"></div>
+
+  <!-- Button to submit new image -->
+  <div class="submit-button-container">
+    <a href="https://docs.google.com/forms/d/e/1FAIpQLSd-Hu_RK1mP7gv0yoHDI50V0CWlZ4sO_4ojTgevwC6hlS5lOQ/viewform?usp=dialog" target="_blank">
+      <button class="submit-button">Submit Your Image</button>
+    </a>
+  </div>
+</section>
 
   <section id="contact">
     <h2>Contact Me</h2>
@@ -33,5 +53,32 @@
   <footer>
     <p>© 2025 Gesang</p>
   </footer>
+
+  <!-- Script to fetch images from Google Sheet -->
+  <script>
+    const sheetUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRv8H4afCZsXQ1w81-HFtRkalZFa1H_hqBt4DpQJb0bEJd5LZFEmnEX8sHBcO3Yr8VitBSqqk12V-Op/pubhtml"; // Replace with your published CSV link
+
+    async function loadImages() {
+      try {
+        const res = await fetch(sheetUrl);
+        const text = await res.text();
+        const lines = text.split("\n").slice(1); // skip header row
+
+        const gallery = document.getElementById("gallery");
+        lines.forEach(line => {
+          const url = line.split(",")[1]; // adjust column index if necessary
+          if (url) {
+            const img = document.createElement("img");
+            img.src = url.trim();
+            gallery.appendChild(img);
+          }
+        });
+      } catch (err) {
+        console.error("Error loading images:", err);
+      }
+    }
+
+    loadImages();
+  </script>
 </body>
 </html>
