@@ -30,7 +30,7 @@
       <button class="submit-button">Submit Your Image</button>
     </a>
   </div>
-</section>
+  </section>
 
   <section id="contact">
     <h2>Contact Me</h2>
@@ -44,29 +44,53 @@
 
   <!-- Script to fetch images from Google Sheet -->
   <script>
-    const sheetUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRv8H4afCZsXQ1w81-HFtRkalZFa1H_hqBt4DpQJb0bEJd5LZFEmnEX8sHBcO3Yr8VitBSqqk12V-Op/pub?output=csv"; // Replace with your published CSV link
+  const sheetUrl = "https://docs.google.com/spreadsheets/d/198Mkg77i3PwMyq8Dtn2YZsv1nJd5UIswpUzB8jYO1eg/gviz/tq?tqx=out:json&gid=1310056979";
 
-    async function loadImages() {
-      try {
-        const res = await fetch(sheetUrl);
-        const text = await res.text();
-        const lines = text.split("\n").slice(1); // skip header row
-
-        const gallery = document.getElementById("gallery");
-        lines.forEach(line => {
-          const url = line.split(",")[1]; // adjust column index if necessary
-          if (url) {
-            const img = document.createElement("img");
-            img.src = url.trim();
-            gallery.appendChild(img);
-          }
-        });
-      } catch (err) {
-        console.error("Error loading images:", err);
-      }
+  function convertDriveLink(url) {
+    // If it's a Google Drive "file/d/ID/view" link, extract the ID
+    const match = url.match(/\/d\/(.*?)\//);
+    if (match && match[1]) {
+      return `https://drive.google.com/uc?export=view&id=${match[1]}`;
     }
+    return url; // return original if it's already direct
+  }
 
-    loadImages();
-  </script>
+  async function loadImages() {
+    try {
+      const res = await fetch(sheetUrl);
+      const text = await res.text();
+      const json = JSON.parse(text.substring(47, text.length - 2));
+
+      const rows = json.table.rows;
+      const gallery = document.getElementById("gallery");
+
+      rows.forEach(row => {
+        let url = row.c[1]?.v; // 2nd column
+        if (url) {
+          url = convertDriveLink(url);
+
+          const img = document.createElement("img");
+          img.src = url;
+          img.loading = "lazy";
+
+          // If image fails to load, warn in console & remove it
+          img.onerror = () => {
+            console.warn("Image failed to load:", url);
+            img.remove();
+          };
+
+          gallery.appendChild(img);
+          console.log("Loading image:", url); // Debug info
+        }
+      });
+    } catch (err) {
+      console.error("Error loading images:", err);
+    }
+  }
+
+  loadImages();
+</script>
+</script>
+
 </body>
 </html>
